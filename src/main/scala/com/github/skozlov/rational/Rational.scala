@@ -14,4 +14,6 @@ object Rational {
 			new Rational(numerator / gcd, denominator / gcd)
 		}
 	}
+
+	implicit def fromBigInt[N](n: N)(implicit f: N => BigInt): Rational = Rational(n, 1)
 }

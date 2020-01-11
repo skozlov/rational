@@ -31,4 +31,11 @@ class RationalSpec extends Spec {
 			intercept[IllegalArgumentException]{Rational(numerator, 0)}.getMessage shouldBe "requirement failed: denominator cannot be zero"
 		}
 	}
+
+	"Rational" should "be implicitly convertible from BigInt or something implicitly convertible to BigInt" in {
+		import Rational.fromBigInt
+		(BigInt(Long.MaxValue) + 1).toPair shouldBe(BigInt(Long.MaxValue) + 1, 1)
+		0.toPair shouldBe (0, 1)
+		2.toPair shouldBe (2, 1)
+	}
 }
