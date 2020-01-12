@@ -11,6 +11,22 @@ case class Rational private(numerator: BigInt, denominator: BigInt) {
 		val divAndMod = numerator.bigInteger divideAndRemainder denominator.bigInteger
 		(divAndMod(0), new Rational(divAndMod(1), denominator))
 	}
+
+	def integerPart: BigInt = integerAndFractionalParts._1
+
+	def floor: BigInt = asBigInt match {
+		case Some(bigInt) => bigInt
+		case None =>
+			val intPart = integerPart
+			if (intPart >= 0) intPart else intPart - 1
+	}
+
+	def ceil: BigInt = asBigInt match {
+		case Some(bigInt) => bigInt
+		case None =>
+			val intPart = integerPart
+			if (intPart >= 0) intPart + 1 else intPart
+	}
 }
 
 object Rational {

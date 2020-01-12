@@ -89,4 +89,22 @@ class RationalSpec extends Spec {
 		2.5.integerAndFractionalParts shouldBe (2, fromBigDecimal(0.5))
 		(-2.5).integerAndFractionalParts shouldBe (-2, fromBigDecimal(-0.5))
 	}
+
+	"floor" should "return the largest BigInt that is less or equal to this Rational" in {
+		import Rational.fromBigDecimal
+		fromBigDecimal(0).floor shouldBe 0
+		fromBigDecimal(2).floor shouldBe 2
+		fromBigDecimal(-2).floor shouldBe -2
+		fromBigDecimal(2.5).floor shouldBe 2
+		fromBigDecimal(-2.5).floor shouldBe -3
+	}
+
+	"ceil" should "return the least BigInt that is greater that or equal to this Rational" in {
+		import Rational.fromBigDecimal
+		fromBigDecimal(0).ceil shouldBe 0
+		fromBigDecimal(2).ceil shouldBe 2
+		fromBigDecimal(-2).ceil shouldBe -2
+		fromBigDecimal(2.5).ceil shouldBe 3
+		fromBigDecimal(-2.5).ceil shouldBe -2
+	}
 }
