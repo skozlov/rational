@@ -48,4 +48,18 @@ class RationalSpec extends Spec {
 		0.5.toPair shouldBe (1, 2)
 		(-0.5).toPair shouldBe (-1, 2)
 	}
+
+	"asBigInt" should "be Some(numerator) for a whole number" in {
+		import Rational.fromBigInt
+		for (n <- List(0, 10, -10)) {
+			n.asBigInt shouldBe Some(n)
+		}
+	}
+
+	"asBigInt" should "be None for a non-whole number" in {
+		import Rational.fromBigDecimal
+		for (r <- List(0.5, -0.5, 1.5, -1.5)) {
+			r.asBigInt shouldBe None
+		}
+	}
 }
