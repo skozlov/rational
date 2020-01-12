@@ -7,26 +7,26 @@ class RationalSpec extends Spec {
 		Rational(2, 1).toPair shouldBe (2, 1)
 	}
 
-	it should "reduce fractions" in {
+	"Rational(BigInt, BigInt)" should "reduce fractions" in {
 		Rational(12, 8).toPair shouldBe (3, 2)
 		Rational(8, 12).toPair shouldBe (2, 3)
 		Rational(4, 2).toPair shouldBe (2, 1)
 		Rational(2, 4).toPair shouldBe (1, 2)
 	}
 
-	it should "always create fractions with positive denominators" in {
+	"Rational(BigInt, BigInt)" should "always create fractions with positive denominators" in {
 		Rational(-8, 12).toPair shouldBe (-2, 3)
 		Rational(8, -12).toPair shouldBe (-2, 3)
 		Rational(-8, -12).toPair shouldBe (2, 3)
 	}
 
-	it should "create equal zeroes for any input denominator" in {
+	"Rational(BigInt, BigInt)" should "create equal zeroes for any input denominator" in {
 		Rational(0, 1).toPair shouldBe (0, 1)
 		Rational(0, 2).toPair shouldBe (0, 1)
 		Rational(0, -2).toPair shouldBe (0, 1)
 	}
 
-	it should "throw IllegalArgumentException for zero denominator" in {
+	"Rational(BigInt, BigInt)" should "throw IllegalArgumentException for zero denominator" in {
 		for (numerator <- List(0, 1)) {
 			intercept[IllegalArgumentException]{Rational(numerator, 0)}.getMessage shouldBe "requirement failed: denominator cannot be zero"
 		}
@@ -34,8 +34,18 @@ class RationalSpec extends Spec {
 
 	"Rational" should "be implicitly convertible from BigInt or something implicitly convertible to BigInt" in {
 		import Rational.fromBigInt
-		(BigInt(Long.MaxValue) + 1).toPair shouldBe(BigInt(Long.MaxValue) + 1, 1)
+		(BigInt(Long.MaxValue) + 1).toPair shouldBe (BigInt(Long.MaxValue) + 1, 1)
 		0.toPair shouldBe (0, 1)
 		2.toPair shouldBe (2, 1)
+		(-2).toPair shouldBe (-2, 1)
+	}
+
+	"Rational" should "be implicitly convertible from BigDecimal or something implicitly convertible to BigDecimal" in {
+		import Rational.fromBigDecimal
+		0.toPair shouldBe (0, 1)
+		10.toPair shouldBe (10, 1)
+		(-10).toPair shouldBe (-10, 1)
+		0.5.toPair shouldBe (1, 2)
+		(-0.5).toPair shouldBe (-1, 2)
 	}
 }
