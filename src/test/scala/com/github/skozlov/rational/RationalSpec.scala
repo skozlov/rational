@@ -62,4 +62,20 @@ class RationalSpec extends Spec {
 			r.asBigInt shouldBe None
 		}
 	}
+
+	"isWhole" should "be true for a whole number" in {
+		import Rational.fromBigInt
+		for (n <- List(0, 10, -10)) {
+			val r: Rational = n
+			r.isWhole shouldBe true
+		}
+	}
+
+	"isWhole" should "be false for a non-whole number" in {
+		import Rational.fromBigDecimal
+		for (d <- List(0.5, -0.5, 1.5, -1.5)) {
+			val r: Rational = d
+			r.isWhole shouldBe false
+		}
+	}
 }

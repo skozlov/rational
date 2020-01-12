@@ -3,7 +3,9 @@ package com.github.skozlov.rational
 case class Rational private(numerator: BigInt, denominator: BigInt) {
 	def toPair: (BigInt, BigInt) = (numerator, denominator)
 
-	def asBigInt: Option[BigInt] = if (denominator == 1) Some(numerator) else None
+	def isWhole: Boolean = denominator == 1
+
+	def asBigInt: Option[BigInt] = if (isWhole) Some(numerator) else None
 }
 
 object Rational {
