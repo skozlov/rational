@@ -6,6 +6,11 @@ case class Rational private(numerator: BigInt, denominator: BigInt) {
 	def isWhole: Boolean = denominator == 1
 
 	def asBigInt: Option[BigInt] = if (isWhole) Some(numerator) else None
+
+	def integerAndFractionalParts: (BigInt, Rational) = {
+		val divAndMod = numerator.bigInteger divideAndRemainder denominator.bigInteger
+		(divAndMod(0), new Rational(divAndMod(1), denominator))
+	}
 }
 
 object Rational {

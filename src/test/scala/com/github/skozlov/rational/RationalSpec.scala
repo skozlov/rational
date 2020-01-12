@@ -78,4 +78,15 @@ class RationalSpec extends Spec {
 			r.isWhole shouldBe false
 		}
 	}
+
+	"integerAndFractionalParts" should "return the integer part (the number rounded towards zero) and the fractional part as Rational" in {
+		import Rational.fromBigDecimal
+		0.integerAndFractionalParts shouldBe (0, fromBigDecimal(0))
+		0.5.integerAndFractionalParts shouldBe (0, fromBigDecimal(0.5))
+		(-0.5).integerAndFractionalParts shouldBe (0, fromBigDecimal(-0.5))
+		2.integerAndFractionalParts shouldBe (2, fromBigDecimal(0))
+		(-2).integerAndFractionalParts shouldBe (-2, fromBigDecimal(0))
+		2.5.integerAndFractionalParts shouldBe (2, fromBigDecimal(0.5))
+		(-2.5).integerAndFractionalParts shouldBe (-2, fromBigDecimal(-0.5))
+	}
 }
