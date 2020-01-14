@@ -1,6 +1,9 @@
 package com.github.skozlov.rational
 
-case class Rational private(numerator: BigInt, denominator: BigInt) {
+import Rational._
+import com.github.skozlov.bigint.leastCommonMultipleOf
+
+case class Rational private(numerator: BigInt, denominator: BigInt) extends Ordered[Rational]{
 	def toPair: (BigInt, BigInt) = (numerator, denominator)
 
 	def isWhole: Boolean = denominator == 1
@@ -27,6 +30,21 @@ case class Rational private(numerator: BigInt, denominator: BigInt) {
 			val intPart = integerPart
 			if (intPart >= 0) intPart + 1 else intPart
 	}
+
+	def round: BigInt = {
+		val (intPart, fracPart) = integerAndFractionalParts
+		if (intPart >= 0) {
+			if (fracPart < new Rational(1, 2)) intPart else intPart + 1
+		} else {
+			if (fracPart > new Rational(-1, 2)) intPart else intPart - 1
+		}
+	}
+
+	override def compare(that: Rational): Int = {
+		toCommonDenominator(this, that) match {
+			case ((numerator1, _), (numerator2, _)) => numerator1 compare numerator2
+		}
+	}
 }
 
 object Rational {
@@ -48,5 +66,12 @@ object Rational {
 			val numerator = (d.bigDecimal movePointRight d.scale).toBigInteger
 			val denominator = BigInt(10) pow d.scale
 			Rational(numerator, denominator)
+	}
+
+	def toCommonDenominator(a: Rational, b: Rational): ((BigInt, BigInt), (BigInt, BigInt)) = {
+		val denominator = leastCommonMultipleOf(a.denominator, b.denominator)
+		val numerator1 = a.numerator * denominator / a.denominator
+		val numerator2 = b.numerator * denominator / b.denominator
+		((numerator1, denominator), (numerator2, denominator))
 	}
 }

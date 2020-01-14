@@ -1,5 +1,8 @@
 package com.github.skozlov.rational
 
+import Rational.toCommonDenominator
+import com.github.skozlov.Spec
+
 class RationalSpec extends Spec {
 	"Rational(BigInt, BigInt)" should "leave canonical fractions as is" in {
 		Rational(2, 3).toPair shouldBe (2, 3)
@@ -95,8 +98,12 @@ class RationalSpec extends Spec {
 		fromBigDecimal(0).floor shouldBe 0
 		fromBigDecimal(2).floor shouldBe 2
 		fromBigDecimal(-2).floor shouldBe -2
+		fromBigDecimal(2.1).floor shouldBe 2
+		fromBigDecimal(-2.1).floor shouldBe -3
 		fromBigDecimal(2.5).floor shouldBe 2
 		fromBigDecimal(-2.5).floor shouldBe -3
+		fromBigDecimal(2.9).floor shouldBe 2
+		fromBigDecimal(-2.9).floor shouldBe -3
 	}
 
 	"ceil" should "return the least BigInt that is greater that or equal to this Rational" in {
@@ -104,7 +111,45 @@ class RationalSpec extends Spec {
 		fromBigDecimal(0).ceil shouldBe 0
 		fromBigDecimal(2).ceil shouldBe 2
 		fromBigDecimal(-2).ceil shouldBe -2
+		fromBigDecimal(2.1).ceil shouldBe 3
+		fromBigDecimal(-2.1).ceil shouldBe -2
 		fromBigDecimal(2.5).ceil shouldBe 3
 		fromBigDecimal(-2.5).ceil shouldBe -2
+		fromBigDecimal(2.9).ceil shouldBe 3
+		fromBigDecimal(-2.9).ceil shouldBe -2
+	}
+
+	"round" should "return the nearest BigInt" in {
+		import Rational.fromBigDecimal
+		fromBigDecimal(0).round shouldBe 0
+		fromBigDecimal(2).round shouldBe 2
+		fromBigDecimal(-2).round shouldBe -2
+		fromBigDecimal(2.1).round shouldBe 2
+		fromBigDecimal(-2.1).round shouldBe -2
+		fromBigDecimal(2.5).round shouldBe 3
+		fromBigDecimal(-2.5).round shouldBe -3
+		fromBigDecimal(2.9).round shouldBe 3
+		fromBigDecimal(-2.9).round shouldBe -3
+	}
+
+	"ordering" should "work as expected" in {
+		import Rational.fromBigDecimal
+		val sortedCorrectly = List[Rational](Rational(-1, 2), Rational(-1, 3), 0, Rational(1, 3), Rational(1, 2))
+		sortedCorrectly.sorted shouldBe sortedCorrectly
+		for (r <- sortedCorrectly) {
+			r compare r shouldBe 0
+		}
+		for (i <- sortedCorrectly.indices.tail) {
+			sortedCorrectly(i - 1) should be < sortedCorrectly(i)
+		}
+	}
+
+	"Rational.toCommonDenominator" should "convert two fractions to a least non-negative common denominator" in {
+		toCommonDenominator(Rational(1, 2), Rational(3, 2)) shouldBe ((1, 2), (3, 2))
+		toCommonDenominator(Rational(-1, 2), Rational(3, 2)) shouldBe ((-1, 2), (3, 2))
+		toCommonDenominator(Rational(-1, 2), Rational(-3, 2)) shouldBe ((-1, 2), (-3, 2))
+		toCommonDenominator(Rational(3, 4), Rational(5, 6)) shouldBe ((9, 12), (10, 12))
+		toCommonDenominator(Rational(-3, 4), Rational(5, 6)) shouldBe ((-9, 12), (10, 12))
+		toCommonDenominator(Rational(-3, 4), Rational(-5, 6)) shouldBe ((-9, 12), (-10, 12))
 	}
 }
