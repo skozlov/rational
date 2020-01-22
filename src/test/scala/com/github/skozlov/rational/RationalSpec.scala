@@ -165,8 +165,29 @@ class RationalSpec extends Spec {
 		Rational(-3, 2).toString shouldBe "-3/2"
 	}
 
+	"toPositional" should "print a number in the positional system with the specified radix" in {
+		import Rational.fromBigInt
+		0.toPositional(2) shouldBe "0"
+		0.toPositional(36) shouldBe "0"
+		15.toPositional(10) shouldBe "15"
+		(-15).toPositional(10) shouldBe "-15"
+		(-15).toPositional(16) shouldBe "-f"
+		(-15).toPositional(15) shouldBe "-10"
+		Rational(-1, 4).toPositional(10) shouldBe "-0.25"
+		Rational(-10, 3).toPositional(10) shouldBe "-3.(3)"
+		Rational(-611, 495).toPositional(10) shouldBe "-1.2(34)"
+		Rational(-15, 16).toPositional(16) shouldBe "-0.f"
+	}
+
+	"toPositional" should "fail for a radix not from 2 to 36" in {
+		import Rational.fromBigInt
+		for (radix <- List[Byte](1, 37)) {
+			intercept[IllegalArgumentException]{0.toPositional(radix)}.getMessage shouldBe "requirement failed: radix should be between 2 and 36"
+		}
+	}
+
 	"unary -" should "return the unary negation of a number" in {
-		import Rational.fromBigDecimal
+		import Rational.fromBigInt
 		-0.asRational shouldBe Rational(0, 1)
 		-1.asRational shouldBe Rational(-1, 1)
 		-(-1).asRational shouldBe Rational(1, 1)
@@ -175,7 +196,7 @@ class RationalSpec extends Spec {
 	}
 
 	"abs" should "return the absolute value of a number" in {
-		import Rational.fromBigDecimal
+		import Rational.fromBigInt
 		0.asRational.abs shouldBe Rational(0, 1)
 		1.asRational.abs shouldBe Rational(1, 1)
 		(-1).asRational.abs shouldBe Rational(1, 1)

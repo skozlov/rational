@@ -3,6 +3,8 @@ package com.github.skozlov.rational
 import Rational._
 import com.github.skozlov.bigint.leastCommonMultipleOf
 
+import scala.annotation.tailrec
+
 case class Rational private(numerator: BigInt, denominator: BigInt) extends Ordered[Rational]{
 	def asRational: Rational = this // to force an implicit conversion
 
@@ -49,6 +51,48 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 	}
 
 	override def toString: String = if (isWhole) numerator.toString else s"$numerator/$denominator"
+
+	def toPositional(radix: Byte): String = {
+		require(radix >= 2 && radix <= 36, "radix should be between 2 and 36")
+		if (numerator < 0) {
+			'-' + (-this).toPositional(radix)
+		}
+		else if (isWhole) {
+			numerator.toString(radix)
+		}
+		else {
+			val (intPart, fracPart) = integerAndFractionalParts
+
+			@tailrec
+			def fracPartToString(rest: BigInt, pastRestsReversed: List[BigInt], restToDigit: Map[BigInt, Byte]): String = {
+				def restsToString(rests: List[BigInt]): String = {
+					def restToChar(rest: BigInt): Char = {
+						val digit = restToDigit(rest)
+						(if (digit < 10) '0' + digit else 'a' + (digit - 10)).toChar
+					}
+
+					(rests map restToChar).mkString
+				}
+
+				if (rest == 0) {
+					restsToString(pastRestsReversed.reverse)
+				}
+				else if (restToDigit contains rest) {
+					val rests = pastRestsReversed.reverse
+					val (nonPeriodicRests, periodicRests) = rests splitAt (rests indexOf rest)
+					s"${restsToString(nonPeriodicRests)}(${restsToString(periodicRests)})"
+				}
+				else {
+					val divAndMod = (rest * BigInt(radix)).bigInteger divideAndRemainder this.denominator.bigInteger
+					val digit = divAndMod(0).byteValueExact()
+					val newRest = divAndMod(1)
+					fracPartToString(newRest, rest :: pastRestsReversed, restToDigit + (rest -> digit))
+				}
+			}
+
+			s"$intPart.${fracPartToString(fracPart.numerator, Nil, Map())}"
+		}
+	}
 
 	def unary_- : Rational = new Rational(-numerator, denominator)
 
