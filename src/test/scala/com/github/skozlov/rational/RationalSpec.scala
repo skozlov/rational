@@ -164,4 +164,13 @@ class RationalSpec extends Spec {
 		Rational(3, 2).toString shouldBe "3/2"
 		Rational(-3, 2).toString shouldBe "-3/2"
 	}
+
+	"abs" should "return the absolute value of a number" in {
+		import Rational.fromBigDecimal
+		0.asRational.abs shouldBe Rational(0, 1)
+		1.asRational.abs shouldBe Rational(1, 1)
+		(-1).asRational.abs shouldBe Rational(1, 1)
+		Rational(1, 2).abs shouldBe Rational(1, 2)
+		Rational(-1, 2).abs shouldBe Rational(1, 2)
+	}
 }

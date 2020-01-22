@@ -49,6 +49,8 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 	}
 
 	override def toString: String = if (isWhole) numerator.toString else s"$numerator/$denominator"
+
+	def abs: Rational = if (numerator >= 0) this else new Rational(-numerator, denominator)
 }
 
 object Rational {
