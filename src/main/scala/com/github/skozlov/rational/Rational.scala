@@ -4,6 +4,8 @@ import Rational._
 import com.github.skozlov.bigint.leastCommonMultipleOf
 
 case class Rational private(numerator: BigInt, denominator: BigInt) extends Ordered[Rational]{
+	def asRational: Rational = this // to force an implicit conversion
+
 	def toPair: (BigInt, BigInt) = (numerator, denominator)
 
 	def isWhole: Boolean = denominator == 1
@@ -45,6 +47,8 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 			case ((numerator1, _), (numerator2, _)) => numerator1 compare numerator2
 		}
 	}
+
+	override def toString: String = if (isWhole) numerator.toString else s"$numerator/$denominator"
 }
 
 object Rational {

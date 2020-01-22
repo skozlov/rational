@@ -152,4 +152,16 @@ class RationalSpec extends Spec {
 		toCommonDenominator(Rational(-3, 4), Rational(5, 6)) shouldBe ((-9, 12), (10, 12))
 		toCommonDenominator(Rational(-3, 4), Rational(-5, 6)) shouldBe ((-9, 12), (-10, 12))
 	}
+
+	"toString" should "print numerator for a whole number" in {
+		import Rational.fromBigInt
+		0.asRational.toString shouldBe "0"
+		1.asRational.toString shouldBe "1"
+		(-1).asRational.toString shouldBe "-1"
+	}
+
+	"toString" should "print common fraction for a non-whole number" in {
+		Rational(3, 2).toString shouldBe "3/2"
+		Rational(-3, 2).toString shouldBe "-3/2"
+	}
 }
