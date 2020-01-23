@@ -1,6 +1,6 @@
 package com.github.skozlov.rational
 
-import Rational.toCommonDenominator
+import Rational.{fromPositional, toCommonDenominator}
 import com.github.skozlov.Spec
 
 class RationalSpec extends Spec {
@@ -183,6 +183,42 @@ class RationalSpec extends Spec {
 		import Rational.fromBigInt
 		for (radix <- List[Byte](1, 37)) {
 			intercept[IllegalArgumentException]{0.toPositional(radix)}.getMessage shouldBe "requirement failed: radix should be between 2 and 36"
+		}
+	}
+
+	"fromPositional" should "parse a rational number from the given string in the given radix" in {
+		import Rational.fromBigInt
+		fromPositional("0", 2) shouldBe 0.asRational
+		fromPositional("0", 36) shouldBe 0.asRational
+		fromPositional("15", 10) shouldBe 15.asRational
+		fromPositional("-15", 10) shouldBe (-15).asRational
+		fromPositional("-15.00", 10) shouldBe (-15).asRational
+		fromPositional("-f", 16) shouldBe (-15).asRational
+		fromPositional("-10", 15) shouldBe (-15).asRational
+		fromPositional("-0.25", 10) shouldBe Rational(-1, 4)
+		fromPositional("-3.(3)", 10) shouldBe Rational(-10, 3)
+		fromPositional("-1.2(34)", 10) shouldBe Rational(-611, 495)
+		fromPositional("-0.f", 16) shouldBe Rational(-15, 16)
+		fromPositional("-0.(9)", 10) shouldBe (-1).asRational
+	}
+
+	"fromPositional" should "fail for a radix not from 2 to 36" in {
+		for (radix <- List[Byte](1, 37)) {
+			intercept[IllegalArgumentException]{fromPositional("0", radix)}.getMessage shouldBe "requirement failed: radix should be between 2 and 36"
+		}
+	}
+
+	"fromPositional" should "fail if the format is wrong" in {
+		for ((source, radix) <- Map(
+			"" -> 10,
+			"-" -> 10,
+			"--1" -> 10,
+			"1.2.3" -> 10,
+			"f" -> 15,
+			"1.(2)(3)" -> 10,
+			"-0.(9" -> 10,
+		)) {
+			assertThrows[NumberFormatException]{fromPositional(source, radix.toByte)}
 		}
 	}
 

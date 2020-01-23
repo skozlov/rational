@@ -97,6 +97,11 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 	def unary_- : Rational = new Rational(-numerator, denominator)
 
 	def abs: Rational = if (numerator >= 0) this else -this
+
+	def +(that: Rational): Rational = { // todo test
+		val ((numerator1, denominator), (numerator2, _)) = toCommonDenominator(this, that)
+		new Rational(numerator1 + numerator2, denominator)
+	}
 }
 
 object Rational {
@@ -108,6 +113,49 @@ object Rational {
 			val gcd = numerator gcd denominator
 			new Rational(numerator / gcd, denominator / gcd)
 		}
+	}
+
+	def fromPositional(source: String, radix: Byte): Rational = {
+		require(radix >= 2 && radix <= 36, "radix should be between 2 and 36")
+
+		def parseNonNegative(source: String): Rational = {
+			def throwNumberFormatException = throw new NumberFormatException("Illegal number format: " + source)
+
+			def parseNotNegativeInt(source: String): BigInt = {
+				val result = BigInt(source, radix)
+				if (result < 0) throwNumberFormatException else result
+			}
+
+			val intAndFrac = source.split("\\.", 2)
+			val intPart = parseNotNegativeInt(intAndFrac(0))
+			if (intAndFrac.size == 1) {
+				intPart
+			}
+			else {
+				val fracParts = intAndFrac(1).split("\\(", 2)
+				val nonPeriodicPartSource = fracParts(0)
+				val nonPeriodicPart = {
+					if (nonPeriodicPartSource.isEmpty) fromBigInt(0)
+					else Rational(parseNotNegativeInt(nonPeriodicPartSource), BigInt(radix) pow nonPeriodicPartSource.length)
+				}
+				if (fracParts.size == 1) {
+					intPart + nonPeriodicPart
+				}
+				else {
+					if (!(fracParts(1) endsWith ")")) {
+						throwNumberFormatException
+					}
+					val periodicPartSource = fracParts(1) dropRight 1
+					val periodicPart = Rational(
+						parseNotNegativeInt(periodicPartSource),
+						(BigInt(radix) pow nonPeriodicPartSource.length) * ((BigInt(radix) pow periodicPartSource.length) - 1)
+					)
+					intPart + nonPeriodicPart + periodicPart
+				}
+			}
+		}
+
+		if (source startsWith "-") -parseNonNegative(source drop 1) else parseNonNegative(source)
 	}
 
 	implicit def fromBigInt[N](n: N)(implicit f: N => BigInt): Rational = Rational(n, 1)
