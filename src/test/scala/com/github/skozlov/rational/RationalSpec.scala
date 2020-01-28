@@ -240,6 +240,15 @@ class RationalSpec extends Spec {
 		Rational(-1, 2).abs shouldBe Rational(1, 2)
 	}
 
+	"inverse" should "transform x to 1/x if x <> 0" in {
+		import Rational.fromBigInt
+		0.inverse shouldBe None
+		1.inverse shouldBe Some(1.asRational)
+		2.inverse shouldBe Some(Rational(1, 2))
+		Rational(1, 2).inverse shouldBe Some(2.asRational)
+		Rational(-1, 2).inverse shouldBe Some(-2.asRational)
+	}
+
 	"+" should "return sum of this and that numbers" in {
 		import Rational.fromBigInt
 		Rational(1, 2) + 0 shouldBe Rational(1, 2)
