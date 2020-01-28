@@ -98,9 +98,10 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 
 	def abs: Rational = if (numerator >= 0) this else -this
 
-	def +(that: Rational): Rational = { // todo test
-		val ((numerator1, denominator), (numerator2, _)) = toCommonDenominator(this, that)
-		new Rational(numerator1 + numerator2, denominator)
+	def +(that: Rational): Rational = {
+		val denominator = this.denominator * that.denominator
+		val numerator = this.numerator * that.denominator + that.numerator * this.denominator
+		Rational(numerator, denominator)
 	}
 }
 
