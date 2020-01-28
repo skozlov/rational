@@ -280,4 +280,18 @@ class RationalSpec extends Spec {
 		Rational(-2, 3) * Rational(5, 7) shouldBe Rational(-10, 21)
 		Rational(-2, 3) * Rational(-5, 7) shouldBe Rational(10, 21)
 	}
+
+	"/" should "return transform a and b to a/b" in {
+		import Rational.fromBigInt
+		0.asRational / 0 shouldBe None
+		Rational(1, 2) / 0 shouldBe None
+		0 / Rational(1, 2) shouldBe Some(0.asRational)
+		Rational(1, 2) / 1 shouldBe Some(Rational(1, 2))
+		1 / Rational(1, 2) shouldBe Some(2.asRational)
+		Rational(2, 3) / Rational(1, 3) shouldBe Some(2.asRational)
+		Rational(2, 3) / Rational(5, 7) shouldBe Some(Rational(14, 15))
+		Rational(2, 3) / Rational(-5, 7) shouldBe Some(Rational(-14, 15))
+		Rational(-2, 3) / Rational(5, 7) shouldBe Some(Rational(-14, 15))
+		Rational(-2, 3) / Rational(-5, 7) shouldBe Some(Rational(14, 15))
+	}
 }

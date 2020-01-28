@@ -113,6 +113,8 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 		val denominator = this.denominator * that.denominator
 		Rational(numerator, denominator)
 	}
+
+	def /(that: Rational): Option[Rational] = that.inverse map {_ * this}
 }
 
 object Rational {
