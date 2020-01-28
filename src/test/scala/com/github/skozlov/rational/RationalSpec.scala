@@ -242,11 +242,21 @@ class RationalSpec extends Spec {
 
 	"+" should "return sum of this and that numbers" in {
 		import Rational.fromBigInt
-		(Rational(1, 2) + 0) shouldBe Rational(1, 2)
+		Rational(1, 2) + 0 shouldBe Rational(1, 2)
 		Rational(1, 2) + Rational(3, 2) shouldBe 2.asRational
 		Rational(1, 2) + Rational(1, 3) shouldBe Rational(5, 6)
 		Rational(-1, 2) + Rational(-1, 3) shouldBe Rational(-5, 6)
 		Rational(1, 2) + Rational(-1, 3) shouldBe Rational(1, 6)
 		Rational(-1, 2) + Rational(1, 3) shouldBe Rational(-1, 6)
+	}
+
+	"-" should "return difference between this and that numbers" in {
+		import Rational.fromBigInt
+		Rational(1, 2) - 0 shouldBe Rational(1, 2)
+		0 - Rational(1, 2) shouldBe Rational(-1, 2)
+		Rational(1, 2) - Rational(1, 3) shouldBe Rational(1, 6)
+		Rational(1, 3) - Rational(1, 2) shouldBe Rational(-1, 6)
+		Rational(-1, 2) - Rational(1, 3) shouldBe Rational(-5, 6)
+		Rational(-1, 2) - Rational(-1, 3) shouldBe Rational(-1, 6)
 	}
 }
