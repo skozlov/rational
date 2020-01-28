@@ -105,6 +105,12 @@ case class Rational private(numerator: BigInt, denominator: BigInt) extends Orde
 	}
 
 	def -(that: Rational): Rational = this + (-that)
+
+	def *(that: Rational): Rational = {
+		val numerator = this.numerator * that.numerator
+		val denominator = this.denominator * that.denominator
+		Rational(numerator, denominator)
+	}
 }
 
 object Rational {

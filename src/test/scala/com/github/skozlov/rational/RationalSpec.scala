@@ -259,4 +259,16 @@ class RationalSpec extends Spec {
 		Rational(-1, 2) - Rational(1, 3) shouldBe Rational(-5, 6)
 		Rational(-1, 2) - Rational(-1, 3) shouldBe Rational(-1, 6)
 	}
+
+	"*" should "return multiplication of this and that numbers" in {
+		import Rational.fromBigInt
+		0.asRational * 0 shouldBe 0.asRational
+		Rational(1, 2) * 0 shouldBe 0.asRational
+		Rational(1, 2) * 1 shouldBe Rational(1, 2)
+		Rational(2, 3) * Rational(3, 2) shouldBe 1.asRational
+		Rational(2, 3) * Rational(5, 7) shouldBe Rational(10, 21)
+		Rational(2, 3) * Rational(-5, 7) shouldBe Rational(-10, 21)
+		Rational(-2, 3) * Rational(5, 7) shouldBe Rational(-10, 21)
+		Rational(-2, 3) * Rational(-5, 7) shouldBe Rational(10, 21)
+	}
 }
